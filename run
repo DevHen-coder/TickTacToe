@@ -1,0 +1,10 @@
+#!/bin/bash
+# Description: run the program for me
+
+#=== VARS
+classDir=./classes
+#=== END VARS
+
+echo -e "[ RUN ] running...\n"
+java -cp $classDir Main
+echo -e "\n[ RUN ] ...done"

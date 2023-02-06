@@ -1,0 +1,17 @@
+#!/bin/bash
+# Description: script to build java project
+
+#=== VARS
+runOption=$1
+classDir="./classes/"
+runPath="./run"
+#=== END VARS
+
+echo "[ BUILD ] starting"
+javac -d $classDir Main.java
+if [[ $runOption == "y" ]];then
+    echo "[ BUILD ] complete"
+    source $runPath
+else
+    echo "[ BUILD ] complete"
+fi
