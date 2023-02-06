@@ -5,8 +5,9 @@
 public class Board{
     
     private String[] positions;
-
     private static Board instance;
+
+    // use a method to initialize instead of the constructor
     private Board(){ init(); }
     public static Board getInstance(){
         if(instance == null)

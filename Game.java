@@ -1,5 +1,8 @@
 import java.util.Scanner;
 
+/**
+ * Main class to start tick-tack-toe game
+ */
 public class Game{
     private boolean isRunning;
     private Board board;
@@ -9,31 +12,36 @@ public class Game{
     private boolean isXTurn;
     private String playerSymbol;
 
-    private int turnCounter = 0;
+    private int turnCounter;
 
-    public Game(){
-        init();
-    }
+    // use a method to initalize, not the constructor
+    public Game(){ init(); }
     
     private void init(){
+        // title
         System.out.println("   ===| Tick Tac Toe |===");
+        // quick instructions message
         System.out.println("Select a square by entering the number position on the board");
         board = Board.getInstance();
         keys = new Scanner(System.in);
 
+        // ensure X is first
         toggleTurn();
 
         setIsRunning(true);
     }
 
-    public void displayTurn(){
+    private void displayTurn(){
         if(isXTurn)
             System.out.println("X's turn ");
         else
             System.out.println("O's turn ");
     }
 
-    public void getUserInput(){
+    /*
+     * Main user input handler.
+     */
+    private void getUserInput(){
         boolean valid = false;
         do{
             System.out.print("> ");
@@ -58,7 +66,10 @@ public class Game{
         }while(!valid);
     }
 
-    public void toggleTurn(){
+    /*
+     * Flip turns and change the playerSymbol to match
+     */
+    private void toggleTurn(){
         isXTurn = !isXTurn;
         if(isXTurn)
             playerSymbol = "X";
@@ -66,15 +77,15 @@ public class Game{
             playerSymbol = "O";
     }
 
-    public void markBoard(int pos){
+    private void markBoard(int pos){
         board.markBoard(pos, playerSymbol);
     }
 
-    public boolean checkInput(int pos){
+    private boolean checkInput(int pos){
         return (pos >= 0 && pos < 9);
     }
 
-    public boolean checkEmptySpace(int pos){
+    private boolean checkEmptySpace(int pos){
         if(board.getPositions()[pos].equals("X") || board.getPositions()[pos].equals("O") ){
             System.out.println("INFO | space " + pos + " is not empty");
             return false;
@@ -82,7 +93,7 @@ public class Game{
         return true;
     }
 
-    public void checkWinner(){
+    private void checkWinner(){
         int[][] lines = {
             {0, 1, 2},
             {3, 4, 5},
@@ -101,17 +112,20 @@ public class Game{
             ){
                 System.out.println("\tWinner is " + playerSymbol );
                 board.showBoard();
-                isRunning = false;
+                setIsRunning(false);
             }
         }
 
-        // draw
+        // after the 7th turn and no winner is assigned, its a DRAW
         if(turnCounter >= 7){
             System.out.println("\tDraw");
-            isRunning = false;
+            setIsRunning(false);
         }
     }
 
+    /*
+     * main loop
+     */
     public void start(){
         displayTurn();
         board.showBoard();
