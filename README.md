@@ -12,17 +12,17 @@ Simply clone this repo. The files you should get are:
 - build (script)
 - run (script)
 
-First run the build script as follows:
-<code>$ ./build</code>
-Note: build accepts an argument "y" which will compile and run the program
-Example: <code>$ ./build y</code>
-This will create a "classes" folder and place all the .class files within.
+First run the build script as follows:\
+<code>$ ./build</code>\
+Note: build accepts an argument "y" which will compile and run the program\
+Example: <code>$ ./build y</code>\
+This will create a "classes" folder and place all the .class files within.\
 
-You then run the run script as follows:
-<code>$ ./run</code>
-Note: run does not take any arguments
+You then run the run script as follows:\
+<code>$ ./run</code>\
+Note: run does not take any arguments\
 This will run Main.java and look in the classes folder for the nessesary .class
-files.
+files.\
 
 ## Feedback
 Feedback is welcomed. I want to improve and what better way for that is to let
