@@ -6,11 +6,13 @@ import java.util.Scanner;
 public class Game{
     private boolean isRunning;
     private Board board;
+    private States gameState;
 
     private Scanner keys;
 
     private boolean isXTurn;
     private String playerSymbol;
+    private String[] symbolOptions;
 
     private int turnCounter;
 
@@ -21,21 +23,74 @@ public class Game{
         // title
         System.out.println("   ===| Tick Tac Toe |===");
         // quick instructions message
-        System.out.println("Select a square by entering the number position on the board");
         board = Board.getInstance();
         keys = new Scanner(System.in);
 
+        gameState = States.MAINMENU;
+        symbolOptions = new String[]{"X", "O"};
         // ensure X is first
         toggleTurn();
 
         setIsRunning(true);
     }
+    
+    private void displayMainMenu(){
+        System.out.println("| Main Menu |");
+        System.out.println("1. Start Game");
+        System.out.println("2. Rules");
+        System.out.println("3. Change Symbols (" +
+                symbolOptions[0] + " vs " + symbolOptions[1] + ")");
+        System.out.println("0. Exit");
+    }
+
+    /*
+     * main menu related methods
+     */
+    private void runMainMenu(){
+        int mmSelection; 
+        do{
+            displayMainMenu();
+            System.out.print("> ");
+            mmSelection = keys.nextInt();
+            switch(mmSelection){
+                case 1:
+                    board.buildBoard();
+                    turnCounter = 0;
+                    isXTurn = true;
+                    System.out.println("\n| Game |");
+                    setGameState(States.GAME);
+                    break;
+                case 2:
+                    displayRules();
+                    break;
+                case 3:
+                    setGameState(States.CHANGE);
+                    break;
+                case 0:
+                    setGameState(States.EXIT);
+                    setIsRunning(false);
+                    break;
+                default:
+                    System.out.println("Invalid entry");
+                    break;
+            }
+        }while(gameState == States.MAINMENU);
+    }
 
     private void displayTurn(){
-        if(isXTurn)
-            System.out.println("X's turn ");
-        else
-            System.out.println("O's turn ");
+        //if(isXTurn) System.out.println("X's turn ");
+        //else System.out.println("O's turn ");
+        if(isXTurn) System.out.println(symbolOptions[0] + "'s turn ");
+        else System.out.println(symbolOptions[1] + "'s turn ");
+    }
+
+    private void displayRules(){
+        System.out.println(
+                "\n| Rules |\n" +
+                "Select a square by entering the number position" + 
+                "on the board.\nYour symbol must occupy three squares " +
+                "to win the game.\nIt can be diagonal, horizontal or " +
+                "vertical.\n");
     }
 
     /*
@@ -72,9 +127,9 @@ public class Game{
     private void toggleTurn(){
         isXTurn = !isXTurn;
         if(isXTurn)
-            playerSymbol = "X";
+            playerSymbol = symbolOptions[0];
         else
-            playerSymbol = "O";
+            playerSymbol = symbolOptions[1];
     }
 
     private void markBoard(int pos){
@@ -86,7 +141,9 @@ public class Game{
     }
 
     private boolean checkEmptySpace(int pos){
-        if(board.getPositions()[pos].equals("X") || board.getPositions()[pos].equals("O") ){
+        if(board.getPositions()[pos].equals(symbolOptions[0]) 
+                || 
+                board.getPositions()[pos].equals(symbolOptions[1]) ){
             System.out.println("INFO | space " + pos + " is not empty");
             return false;
         }
@@ -112,27 +169,93 @@ public class Game{
             ){
                 System.out.println("\tWinner is " + playerSymbol );
                 board.showBoard();
-                setIsRunning(false);
+                System.out.println(" ");
+                setGameState(States.MAINMENU);
+                //setIsRunning(false);
             }
         }
 
         // after the 7th turn and no winner is assigned, its a DRAW
         if(turnCounter >= 7){
             System.out.println("\tDraw");
-            setIsRunning(false);
+            setGameState(States.MAINMENU);
+            //setIsRunning(false);
         }
     }
 
-    /*
-     * main loop
-     */
-    public void start(){
+
+    private void runGameLoop(){
         displayTurn();
         board.showBoard();
         getUserInput();
         checkWinner();
         turnCounter++;
         toggleTurn();
+    }
+
+    private boolean checkSymbol(String symbol){
+        // I want the result to be false
+        int tmp;
+        try{
+            tmp = Integer.parseInt(symbol);
+            // if it worked then the input was a number
+            return true;
+        }
+        catch(NumberFormatException e){
+            //System.out.println("INFO | Number not allowed. ");
+        }
+        return false;
+    }
+
+    private void runChangeSymbols(){
+
+        boolean isValid = true;
+        String p1, p2;
+        do{
+            System.out.print("Enter player 1's symbol (numbers not allowed): ");
+            p1 = keys.next();
+            isValid = checkSymbol( p1.substring(0, 1) );
+        }while( isValid );
+        //System.out.println("p1: " + p1.substring(0, 1) );
+
+        isValid = true;
+
+        do{
+            System.out.print("Enter player 2's symbol (numbers not allowed): ");
+            p2 = keys.next();
+            isValid = checkSymbol(p2.substring(0, 1));
+        }while( isValid );
+        //System.out.println("p2: " + p2);
+        
+        // set the new symbols
+        symbolOptions[0] = p1.substring(0, 1);
+        symbolOptions[1] = p2.substring(0, 1);
+
+        // playerSymbol needs to be "updated".
+        // use the new symbols provided.
+        playerSymbol = symbolOptions[0];
+
+        System.out.println(" ");
+        setGameState(States.MAINMENU);
+    }
+
+    /*
+     * main loop
+     */
+    public void start(){
+        switch(gameState){
+            case MAINMENU:
+                runMainMenu();
+                break;
+            case GAME:
+                runGameLoop();
+                break;
+            case CHANGE:
+                System.out.println("\n| Change Symbols |");
+                runChangeSymbols();
+                break;
+            default: break;
+        }
     }
 
     public void cleanUp(){
@@ -143,5 +266,7 @@ public class Game{
 
     public boolean getIsRunning(){ return isRunning; }
     public void setIsRunning(boolean value){ isRunning = value; }
+
+    public void setGameState(States newState){ gameState = newState; }
 
 }

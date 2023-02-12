@@ -19,7 +19,7 @@ public class Board{
         buildBoard();
     }
 
-    private void buildBoard(){
+    public void buildBoard(){
         positions = new String[9];
         for(int i = 0; i < positions.length; i++){
             positions[i] = String.valueOf(i);

@@ -1,0 +1,1 @@
+enum States{ MAINMENU, GAME, CHANGE, EXIT }
