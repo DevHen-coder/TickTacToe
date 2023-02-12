@@ -7,4 +7,4 @@ classDir=./classes
 
 echo -e "[ RUN ] running...\n"
 java -cp $classDir Main
-echo -e "\n[ RUN ] ...done"
+#echo -e "\n[ RUN ] ...done"
